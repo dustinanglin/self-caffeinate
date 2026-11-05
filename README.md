@@ -1,6 +1,6 @@
 # Self Caffeinate
 
-macOS menu-bar app that toggles `/usr/bin/caffeinate -d` so the display stays awake. Coffee-cup icon in the status bar; no Dock icon.
+macOS menu-bar app with three caffeine modes (Off, Half-caf, Full). Coffee-cup icon in the status bar; no Dock icon.
 
 Cloud agents cannot push to `brexhq-private/self-caffeinate`. **Copy these files into a local clone, open in Xcode, Run, then push from your Mac.**
 
@@ -24,13 +24,7 @@ Repo: https://github.com/brexhq-private/self-caffeinate
    open SelfCaffeinate.xcodeproj
    ```
 4. In Xcode: select the **SelfCaffeinate** scheme → **My Mac** → press **Run** (⌘R).
-5. Look in the menu bar for the cup icon. Click → **Caffeinate** / **Uncaffeinate**. Confirm with Activity Monitor or `pgrep -lf caffeinate`.
-6. Commit and push from your Mac:
-   ```bash
-   git add SelfCaffeinate SelfCaffeinate.xcodeproj README.md SETUP.md
-   git commit -m "Add SwiftUI MenuBarExtra caffeinate toggle"
-   git push -u origin HEAD
-   ```
+5. Look in the menu bar for the cup icon. Click → choose **Off**, **Half-caf**, or **Full**. Confirm with `pgrep -lf caffeinate` / `pmset -g assertions`.
 
 Signing: use your personal team / “Sign to Run Locally”. App Sandbox is **off** so spawning `caffeinate` works.
 
@@ -38,14 +32,15 @@ More detail / File → New fallback: [SETUP.md](./SETUP.md)
 
 ## Behavior
 
-| Menu | Meaning |
-|------|---------|
-| Status: **Caffeinated** / **Uncaffeinated** | Whether the child `caffeinate -d` is running |
-| **Caffeinate** | Spawn `/usr/bin/caffeinate -d` |
-| **Uncaffeinate** | Terminate that process |
-| **Quit** | Uncaffeinate, then exit |
+| Mode | Process | Display |
+|------|---------|---------|
+| **Off / Uncaffeinated** | none | normal sleep |
+| **Half-caf** | `/usr/bin/caffeinate` (no `-d`) | may sleep; idle sleep prevented |
+| **Full / Caffeinated** | `/usr/bin/caffeinate -d` | stays on |
 
-Icon: `cup.and.saucer` when off, `cup.and.saucer.fill` when on. `LSUIElement` = true → no Dock icon.
+Menu lists all three with a checkmark on the active mode; switching kills any current child and starts the new one (or none for Off). **Quit** cleans up the child process.
+
+Icons: `MenuBarCupEmpty` / `MenuBarCupHalf` / `MenuBarCupFilled`. `LSUIElement` = true → no Dock icon.
 
 ## Layout
 
