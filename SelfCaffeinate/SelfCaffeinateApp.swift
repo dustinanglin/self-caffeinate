@@ -8,17 +8,19 @@ struct SelfCaffeinateApp: App {
 
     var body: some Scene {
         MenuBarExtra {
-            Text(caffeine.isCaffeinated ? "Caffeinated" : "Uncaffeinated")
+            Text(caffeine.mode.accessibilityLabel)
 
             Divider()
 
-            if caffeine.isCaffeinated {
-                Button("Uncaffeinate") {
-                    caffeine.uncaffeinate()
-                }
-            } else {
-                Button("Caffeinate") {
-                    caffeine.caffeinate()
+            ForEach(CaffeineMode.allCases, id: \.self) { mode in
+                Button {
+                    caffeine.setMode(mode)
+                } label: {
+                    if caffeine.mode == mode {
+                        Label(mode.title, systemImage: "checkmark")
+                    } else {
+                        Text(mode.title)
+                    }
                 }
             }
 
@@ -36,9 +38,9 @@ struct SelfCaffeinateApp: App {
             }
             .keyboardShortcut("q")
         } label: {
-            Image(caffeine.isCaffeinated ? "MenuBarCupFilled" : "MenuBarCupEmpty")
+            Image(caffeine.mode.menuBarImageName)
                 .renderingMode(.template)
-                .accessibilityLabel(caffeine.isCaffeinated ? "Caffeinated" : "Uncaffeinated")
+                .accessibilityLabel(caffeine.mode.accessibilityLabel)
                 .onAppear {
                     appDelegate.caffeine = caffeine
                 }
