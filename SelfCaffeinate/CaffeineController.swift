@@ -43,6 +43,24 @@ enum CaffeineMode: Equatable, Hashable, CaseIterable {
         case .full: return ["-d"]
         }
     }
+
+    /// Next stronger mode, if any (Off → Half → Full). Does not wrap.
+    var increased: CaffeineMode? {
+        switch self {
+        case .off: return .half
+        case .half: return .full
+        case .full: return nil
+        }
+    }
+
+    /// Next weaker mode, if any (Full → Half → Off). Does not wrap.
+    var decreased: CaffeineMode? {
+        switch self {
+        case .off: return nil
+        case .half: return .off
+        case .full: return .half
+        }
+    }
 }
 
 /// Owns a `/usr/bin/caffeinate` child process while half-caf or fully caffeinated.
@@ -69,6 +87,18 @@ final class CaffeineController: ObservableObject {
     /// Terminates any child process and returns to Off. Used by Quit and app termination.
     func uncaffeinate() {
         setMode(.off)
+    }
+
+    /// Off → Half → Full; no-op at Full.
+    func increase() {
+        guard let next = mode.increased else { return }
+        setMode(next)
+    }
+
+    /// Full → Half → Off; no-op at Off.
+    func decrease() {
+        guard let next = mode.decreased else { return }
+        setMode(next)
     }
 
     /// Terminate the Process we spawned (and its stored PID), waiting until it is gone.

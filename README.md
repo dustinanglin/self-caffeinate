@@ -38,7 +38,9 @@ More detail / File → New fallback: [SETUP.md](./SETUP.md)
 | **Half-caf** | `/usr/bin/caffeinate` (no `-d`) | may sleep; idle sleep prevented |
 | **Full / Caffeinated** | `/usr/bin/caffeinate -d` | stays on |
 
-Menu lists all three with a checkmark on the active mode; switching kills any current child and starts the new one (or none for Off). **Quit** cleans up the child process.
+Menu lists all three with the matching cup icon before each label and a checkmark on the active mode; switching kills any current child and starts the new one (or none for Off). **Quit** cleans up the child process.
+
+Global hotkeys (work while unfocused): **Ctrl+Option+=** increase (Off→Half→Full), **Ctrl+Option+-** decrease (reverse). Clamped at the ends; keypad ± also works.
 
 Icons: `MenuBarCupEmpty` / `MenuBarCupHalf` / `MenuBarCupFilled`. `LSUIElement` = true → no Dock icon.
 

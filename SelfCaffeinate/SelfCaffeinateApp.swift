@@ -16,10 +16,16 @@ struct SelfCaffeinateApp: App {
                 Button {
                     caffeine.setMode(mode)
                 } label: {
-                    if caffeine.mode == mode {
-                        Label(mode.title, systemImage: "checkmark")
-                    } else {
-                        Text(mode.title)
+                    Label {
+                        HStack(spacing: 6) {
+                            Image(mode.menuBarImageName)
+                                .renderingMode(.template)
+                            Text(mode.title)
+                        }
+                    } icon: {
+                        // Keep leading checkmark column aligned for all rows.
+                        Image(systemName: "checkmark")
+                            .opacity(caffeine.mode == mode ? 1 : 0)
                     }
                 }
             }
@@ -42,7 +48,7 @@ struct SelfCaffeinateApp: App {
                 .renderingMode(.template)
                 .accessibilityLabel(caffeine.mode.accessibilityLabel)
                 .onAppear {
-                    appDelegate.caffeine = caffeine
+                    appDelegate.attach(caffeine: caffeine)
                 }
         }
         .menuBarExtraStyle(.menu)
@@ -50,9 +56,16 @@ struct SelfCaffeinateApp: App {
 }
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    var caffeine: CaffeineController?
+    private let hotkeys = CaffeineHotkeys()
+    private(set) var caffeine: CaffeineController?
+
+    func attach(caffeine: CaffeineController) {
+        self.caffeine = caffeine
+        hotkeys.install(caffeine: caffeine)
+    }
 
     func applicationWillTerminate(_ notification: Notification) {
+        hotkeys.uninstall()
         caffeine?.uncaffeinate()
     }
 }
