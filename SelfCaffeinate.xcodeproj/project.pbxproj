@@ -11,6 +11,7 @@
 		A10000000000000000000002 /* CaffeineController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* CaffeineController.swift */; };
 		A10000000000000000000003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* Assets.xcassets */; };
 		A10000000000000000000007 /* CaffeineHotkeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000007 /* CaffeineHotkeys.swift */; };
+		A10000000000000000000008 /* StatusBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* StatusBarController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -18,6 +19,7 @@
 		A20000000000000000000002 /* CaffeineController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaffeineController.swift; sourceTree = "<group>"; };
 		A20000000000000000000003 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A20000000000000000000007 /* CaffeineHotkeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaffeineHotkeys.swift; sourceTree = "<group>"; };
+		A20000000000000000000008 /* StatusBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarController.swift; sourceTree = "<group>"; };
 		A20000000000000000000004 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A20000000000000000000005 /* SelfCaffeinate.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SelfCaffeinate.entitlements; sourceTree = "<group>"; };
 		A20000000000000000000006 /* SelfCaffeinate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SelfCaffeinate.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -48,6 +50,7 @@
 				A20000000000000000000001 /* SelfCaffeinateApp.swift */,
 				A20000000000000000000002 /* CaffeineController.swift */,
 				A20000000000000000000007 /* CaffeineHotkeys.swift */,
+				A20000000000000000000008 /* StatusBarController.swift */,
 				A20000000000000000000003 /* Assets.xcassets */,
 				A20000000000000000000004 /* Info.plist */,
 				A20000000000000000000005 /* SelfCaffeinate.entitlements */,
@@ -135,6 +138,7 @@
 				A10000000000000000000001 /* SelfCaffeinateApp.swift in Sources */,
 				A10000000000000000000002 /* CaffeineController.swift in Sources */,
 				A10000000000000000000007 /* CaffeineHotkeys.swift in Sources */,
+				A10000000000000000000008 /* StatusBarController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
