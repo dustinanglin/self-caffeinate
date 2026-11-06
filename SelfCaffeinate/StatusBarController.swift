@@ -84,6 +84,11 @@ final class StatusBarController: NSObject {
                 image.isTemplate = true
                 item.image = image
             }
+            // macOS 27 hides menu item images by default for apps built against the 26+ SDK;
+            // opt these rows back in so the cup icons show next to each mode.
+            if #available(macOS 27.0, *) {
+                item.preferredImageVisibility = .visible
+            }
             menu.addItem(item)
         }
 
