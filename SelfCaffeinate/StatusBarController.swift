@@ -97,10 +97,10 @@ final class StatusBarController: NSObject {
         let hotkeyHint = NSMenuItem(title: "", action: nil, keyEquivalent: "")
         hotkeyHint.isEnabled = false
         hotkeyHint.attributedTitle = NSAttributedString(
-            string: "⌃⌥ =  more caffeine    ⌃⌥ −  less",
+            string: "⌃⌥ +  more caffeine    ⌃⌥ −  less",
             attributes: [.font: NSFont.menuFont(ofSize: NSFont.smallSystemFontSize)]
         )
-        hotkeyHint.toolTip = "Control-Option-Equals steps up (Off → Half-caf → Full); Control-Option-Minus steps down. Works while another app is focused."
+        hotkeyHint.toolTip = "Control-Option-Plus steps up (Off → Half-caf → Full); Control-Option-Minus steps down. Works while another app is focused."
         menu.addItem(hotkeyHint)
 
         if let lastError = caffeine.lastError {

@@ -30,7 +30,7 @@ The menu (AppKit `NSMenu`) lists all three modes with a matching cup icon and a 
 
 **Launch at Login** registers the app with `SMAppService` (macOS 13+). The checkmark reflects the current state. If you turned the item off in System Settings, selecting it again opens the Login Items pane, since macOS will not re-enable it silently.
 
-Global hotkeys (work while unfocused): **Ctrl+Option+=** increase (Off→Half→Full), **Ctrl+Option+-** decrease. Clamped at the ends; keypad ± also works.
+Global hotkeys (work while unfocused): **Ctrl+Option++** increase (Off→Half→Full), **Ctrl+Option+-** decrease. Clamped at the ends; keypad ± also works.
 
 ## Layout
 
