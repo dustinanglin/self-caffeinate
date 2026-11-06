@@ -14,8 +14,8 @@ enum CaffeineMode: Equatable, Hashable, CaseIterable {
     var title: String {
         switch self {
         case .off: return "Off / Uncaffeinated"
-        case .half: return "Half-caf"
-        case .full: return "Full / Caffeinated"
+        case .half: return "Half-caf (caffeinate)"
+        case .full: return "Full / Caffeinated (caffeinate -d)"
         }
     }
 
@@ -30,7 +30,7 @@ enum CaffeineMode: Equatable, Hashable, CaseIterable {
     var accessibilityLabel: String {
         switch self {
         case .off: return "Uncaffeinated"
-        case .half: return "Half-caf"
+        case .half: return "Half-caf (caffeinate)"
         case .full: return "Caffeinated"
         }
     }
