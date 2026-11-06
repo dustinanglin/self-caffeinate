@@ -5,6 +5,8 @@ import Combine
 /// (SwiftUI `MenuBarExtra` menus collapse custom icons and treat opacity-0 checkmarks as present.)
 final class StatusBarController: NSObject {
     private let caffeine: CaffeineController
+    private let loginItem = LoginItemController()
+    private var loginItemError: String?
     private let statusItem: NSStatusItem
     private var cancellables = Set<AnyCancellable>()
 
@@ -98,6 +100,30 @@ final class StatusBarController: NSObject {
 
         menu.addItem(.separator())
 
+        let launchAtLogin = NSMenuItem(
+            title: "Launch at Login",
+            action: #selector(toggleLaunchAtLogin(_:)),
+            keyEquivalent: ""
+        )
+        launchAtLogin.target = self
+        launchAtLogin.state = loginItem.isEnabled ? .on : .off
+        if loginItem.requiresApproval {
+            launchAtLogin.toolTip = "Disabled in System Settings › Login Items. Select to open that pane."
+        }
+        menu.addItem(launchAtLogin)
+
+        if let loginItemError {
+            let errorItem = NSMenuItem(
+                title: "Error: \(loginItemError)",
+                action: nil,
+                keyEquivalent: ""
+            )
+            errorItem.isEnabled = false
+            menu.addItem(errorItem)
+        }
+
+        menu.addItem(.separator())
+
         let quit = NSMenuItem(
             title: "Quit",
             action: #selector(quitApp(_:)),
@@ -112,6 +138,16 @@ final class StatusBarController: NSObject {
     @objc private func selectMode(_ sender: NSMenuItem) {
         guard let mode = CaffeineMode.from(menuTag: sender.tag) else { return }
         caffeine.setMode(mode)
+    }
+
+    @objc private func toggleLaunchAtLogin(_ sender: NSMenuItem) {
+        do {
+            try loginItem.setEnabled(!loginItem.isEnabled)
+            loginItemError = nil
+        } catch {
+            loginItemError = error.localizedDescription
+        }
+        rebuildMenu()
     }
 
     @objc private func quitApp(_ sender: NSMenuItem) {

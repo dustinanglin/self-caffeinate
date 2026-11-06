@@ -1,34 +1,22 @@
 # Self Caffeinate
 
-macOS menu-bar app with three caffeine modes (Off, Half-caf, Full). Coffee-cup icon in the status bar; no Dock icon.
+macOS menu-bar app with three caffeine modes (Off, Half-caf, Full). Coffee-cup icon in the status bar, no Dock icon, optional launch at login.
 
-Cloud agents cannot push to `brexhq-private/self-caffeinate`. **Copy these files into a local clone, open in Xcode, Run, then push from your Mac.**
+Repo: https://github.com/dustinanglin/self-caffeinate
 
-Repo: https://github.com/brexhq-private/self-caffeinate
+## Install
 
-## Quick start (under 5 minutes)
+Requires macOS 13+ and Xcode 15+.
 
-1. On your Mac, clone (or pull) the repo:
-   ```bash
-   git clone https://github.com/brexhq-private/self-caffeinate.git
-   cd self-caffeinate
-   ```
-2. Copy **everything** from this `docs/self-caffeinate/` folder into the clone root (merge; keep existing README if you prefer, but keep the Xcode project and `SelfCaffeinate/` sources). From the Project Context / this folder:
-   ```bash
-   # Example: if you downloaded or synced the scaffold next to the clone
-   cp -R SelfCaffeinate SelfCaffeinate.xcodeproj SETUP.md ./path/to/self-caffeinate/
-   # Also copy this README if the repo README is empty
-   ```
-3. Open the project:
-   ```bash
-   open SelfCaffeinate.xcodeproj
-   ```
-4. In Xcode: select the **SelfCaffeinate** scheme → **My Mac** → press **Run** (⌘R).
-5. Look in the menu bar for the cup icon. Click → choose **Off**, **Half-caf**, or **Full**. Confirm with `pgrep -lf caffeinate` / `pmset -g assertions`.
+```bash
+git clone https://github.com/dustinanglin/self-caffeinate.git
+cd self-caffeinate
+scripts/install.sh
+```
 
-Signing: use your personal team / “Sign to Run Locally”. App Sandbox is **off** so spawning `caffeinate` works.
+The script builds a Release copy, installs it to `/Applications/SelfCaffeinate.app`, and launches it. To start it automatically at login, open the cup menu and choose **Launch at Login**.
 
-More detail / File → New fallback: [SETUP.md](./SETUP.md)
+To develop instead, `open SelfCaffeinate.xcodeproj`, pick the **SelfCaffeinate** scheme and **My Mac**, and press Run. See [SETUP.md](./SETUP.md) for details.
 
 ## Behavior
 
@@ -38,20 +26,25 @@ More detail / File → New fallback: [SETUP.md](./SETUP.md)
 | **Half-caf** | `/usr/bin/caffeinate` (no `-d`) | may sleep; idle sleep prevented |
 | **Full / Caffeinated** | `/usr/bin/caffeinate -d` | stays on |
 
-Menu (AppKit `NSMenu`) lists all three with the matching cup icon before each label and a checkmark on the active mode only; switching kills any current child and starts the new one (or none for Off). **Quit** cleans up the child process.
+The menu (AppKit `NSMenu`) lists all three modes with a matching cup icon and a checkmark on the active one. Switching kills any current child process and starts the new one (or none for Off). **Quit** cleans up the child process.
 
-Global hotkeys (work while unfocused): **Ctrl+Option+=** increase (Off→Half→Full), **Ctrl+Option+-** decrease (reverse). Clamped at the ends; keypad ± also works.
+**Launch at Login** registers the app with `SMAppService` (macOS 13+). The checkmark reflects the current state. If you turned the item off in System Settings, selecting it again opens the Login Items pane, since macOS will not re-enable it silently.
 
-Icons: `MenuBarCupEmpty` / `MenuBarCupHalf` / `MenuBarCupFilled`. `LSUIElement` = true → no Dock icon.
+Global hotkeys (work while unfocused): **Ctrl+Option+=** increase (Off→Half→Full), **Ctrl+Option+-** decrease. Clamped at the ends; keypad ± also works.
 
 ## Layout
 
 ```
 SelfCaffeinate.xcodeproj/     ← open this in Xcode
 SelfCaffeinate/
-  SelfCaffeinateApp.swift     ← MenuBarExtra UI + quit cleanup
-  CaffeineController.swift    ← Process start/stop
+  SelfCaffeinateApp.swift     ← app lifecycle + quit cleanup
+  StatusBarController.swift   ← status item, menu, launch-at-login toggle
+  CaffeineController.swift    ← caffeinate process start/stop
+  CaffeineHotkeys.swift       ← global hotkeys (Carbon)
+  LoginItemController.swift   ← SMAppService wrapper
   Info.plist                  ← LSUIElement
   SelfCaffeinate.entitlements ← sandbox off
   Assets.xcassets/
+scripts/
+  install.sh                  ← build Release + copy to /Applications
 ```

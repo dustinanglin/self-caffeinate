@@ -3,65 +3,47 @@
 ## Requirements
 
 - macOS 13+
-- Xcode 15+ (SwiftUI `MenuBarExtra`)
-- Local git access to https://github.com/brexhq-private/self-caffeinate
+- Xcode 15+ (SwiftUI app lifecycle, `SMAppService`)
 
-## Copy into the clone
+## Install as a standalone app
 
-Put the scaffold at the **repo root** so paths match the Xcode project:
-
-```
-self-caffeinate/                 ← git clone root
-  README.md
-  SETUP.md
-  SelfCaffeinate.xcodeproj/
-  SelfCaffeinate/
-    SelfCaffeinateApp.swift
-    CaffeineController.swift
-    Info.plist
-    SelfCaffeinate.entitlements
-    Assets.xcassets/
+```bash
+scripts/install.sh            # build, install to /Applications, launch
+scripts/install.sh --no-open  # build and install only
 ```
 
-If the private repo already has files, merge carefully: keep the `SelfCaffeinate/` sources and `.xcodeproj` from this scaffold.
+The script quits any running copy first, replaces `/Applications/SelfCaffeinate.app`, and relaunches it. Re-run it after pulling changes.
 
-## Run
+Signing is "Sign to Run Locally" (ad-hoc). That is enough for an app you build on your own Mac: Gatekeeper only quarantines downloaded files, so no notarization is needed. The hotkeys use Carbon `RegisterEventHotKey` and need no Accessibility permission.
+
+## Launch at login
+
+1. Run the **installed** copy from `/Applications`, not the Xcode build. The login item records the bundle's path, and the DerivedData path changes on every rebuild.
+2. Cup menu → **Launch at Login**. macOS shows a one-time notification that the app was added to login items.
+3. To check or remove it outside the app: System Settings → General → Login Items & Extensions.
+
+If the toggle shows an error or stays unchecked, the item was probably disabled in System Settings. Selecting it again opens that pane so you can re-enable it there.
+
+## Run from Xcode
 
 1. `open SelfCaffeinate.xcodeproj`
 2. Scheme **SelfCaffeinate**, destination **My Mac**
-3. Signing & Capabilities → Team = your Apple ID / Brex team; leave Sandbox **off**
-4. Run (⌘R). App is menu-bar only (`LSUIElement`).
+3. Signing & Capabilities → Team = your Apple ID, or leave "Sign to Run Locally"; leave Sandbox **off**
+4. Run (⌘R). The app is menu-bar only (`LSUIElement`).
+
+Quit the installed copy before running from Xcode, or you will get two cup icons and two `caffeinate` processes.
 
 ## Verify
 
-1. Menu bar cup → **Caffeinate** → status **Caffeinated**, filled cup.
-2. Terminal: `pgrep -lf '/usr/bin/caffeinate'` should show a process with `-d`.
-3. **Uncaffeinate** → process gone; status **Uncaffeinated**.
+1. Menu bar cup → **Full** → status **Caffeinated**, filled cup.
+2. Terminal: `pgrep -lf '/usr/bin/caffeinate'` shows a process with `-d`.
+3. **Off** → process gone; status **Uncaffeinated**.
 4. Caffeinate again, then **Quit** → process must exit.
-
-## Fallback: File → New (if `.xcodeproj` will not open)
-
-1. Xcode → **File → New → Project → macOS → App**
-2. Product Name: `SelfCaffeinate`, Interface: **SwiftUI**, Language: **Swift**
-3. Replace the generated `App` file with `SelfCaffeinateApp.swift` and add `CaffeineController.swift`
-4. Target → **Info**: set **Application is agent (UIElement)** / `LSUIElement` = YES (or use the provided `Info.plist`)
-5. Target → **Signing & Capabilities**: remove App Sandbox if present
-6. Delete any WindowGroup-only template UI; keep only `MenuBarExtra`
-7. Run on My Mac
-
-## Push from your Mac
-
-Cloud / Cursor workers cannot access this private repo. After it runs:
-
-```bash
-git add SelfCaffeinate SelfCaffeinate.xcodeproj README.md SETUP.md
-git status
-git commit -m "Add SwiftUI MenuBarExtra caffeinate toggle"
-git push -u origin HEAD
-```
+5. `pmset -g assertions` also shows the active assertion while caffeinated.
 
 ## Notes
 
-- `caffeinate -d` prevents **display** sleep (same as Terminal).
-- Child process is owned by the app; quitting always calls `terminate()`.
-- Optional later: IOKit `IOPMAssertion` instead of a subprocess (see project feasibility doc).
+- `caffeinate -d` prevents **display** sleep; without `-d` it prevents idle sleep only.
+- The child process is owned by the app; quitting always calls `terminate()`.
+- App Sandbox is off so the app can spawn `/usr/bin/caffeinate`.
+- Possible later change: IOKit `IOPMAssertion` instead of a subprocess.
