@@ -92,6 +92,17 @@ final class StatusBarController: NSObject {
             menu.addItem(item)
         }
 
+        // Info row: the global hotkeys step the mode up/down rather than picking a level,
+        // so they live under the mode list instead of as per-row key equivalents.
+        let hotkeyHint = NSMenuItem(title: "", action: nil, keyEquivalent: "")
+        hotkeyHint.isEnabled = false
+        hotkeyHint.attributedTitle = NSAttributedString(
+            string: "⌃⌥ =  more caffeine    ⌃⌥ −  less",
+            attributes: [.font: NSFont.menuFont(ofSize: NSFont.smallSystemFontSize)]
+        )
+        hotkeyHint.toolTip = "Control-Option-Equals steps up (Off → Half-caf → Full); Control-Option-Minus steps down. Works while another app is focused."
+        menu.addItem(hotkeyHint)
+
         if let lastError = caffeine.lastError {
             menu.addItem(.separator())
             let errorItem = NSMenuItem(
